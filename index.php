@@ -5,9 +5,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?php
-      include("funcoes/global.php");
-      include('conexao/conexao.php');
-      importacoes();
+      include("funcoes/global.php"); //Funções PHP
+      include('conexao/conexao.php'); //Linha para trazer a conexão
+      importacoes(); // Chamando includes!
     ?>
     <title>Login!</title>
   </head>
@@ -30,7 +30,6 @@
         </form>
     </div>
   </body>
-</html>
 
 
 <div class="modal fade" id="myModal" role="dialog">

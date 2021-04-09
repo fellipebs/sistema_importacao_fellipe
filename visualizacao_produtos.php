@@ -17,10 +17,10 @@ if(!isset($_SESSION['usuario'])){ //Caso não exista sessão, redirecionar o usu
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="sistema.php">Home <span class="sr-only">(current)</span></a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" active>
         <a class="nav-link" href="visualizacao_produtos.php">Ver já importados</a>
       </li>
       <li class="nav-item">
@@ -32,3 +32,7 @@ if(!isset($_SESSION['usuario'])){ //Caso não exista sessão, redirecionar o usu
     </form>
   </div>
 </nav>
+
+<div class='container-fluid'>
+
+</div>

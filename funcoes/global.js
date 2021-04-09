@@ -83,7 +83,7 @@ function login(){
     dataType: 'json',
     success: function(result) {
       if(result.resp == true){
-        window.location.href = "sistema.php"
+        window.location.href = "sistema.php";
       }else{
         Swal.fire(
           'Alerta!',
@@ -94,4 +94,29 @@ function login(){
     }
   });
  
+}
+
+function logout(){
+  Swal.fire({
+    title: 'Deseja realmente sair?',
+    text: "Você será deslogado do sistema!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    cancelButtonText: 'Cancelar.',
+    confirmButtonText: 'Sim, desejo!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $.ajax({
+        type: "POST",
+        url: "auxiliares/logout.php",
+        data: { },
+        dataType: 'json',
+        success: function(result) {  
+          window.location.href = "index.php";
+        }
+      });
+    }
+  })
 }
