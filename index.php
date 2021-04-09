@@ -24,7 +24,7 @@
                 <label>Digite sua senha:</label>
                 <input type='password' name='senha' id='senha' class='form-control' required>
                 <a href='' data-toggle="modal" data-target="#myModal">Caso não possua login, clique aqui para fazer seu cadastro!</a>
-                <button class='btn btn-primary' id='btnEntra'>Entrar</button>
+                <button class='btn btn-primary' id='btnEntra' type='button' onclick='login();'>Entrar</button>
             </div>
         </div>
         </form>
