@@ -39,7 +39,26 @@ function cadastrar(){
             icon: 'warning',
             confirmButtonText: 'Continuar'
           });
+    }else{ //Caso chegue aqui, as validações iniciais foram supridas!
+		$.ajax({
+			type: "POST",
+			url: "auxiliares/cadastro_usuario.php",
+			data: {
+				'nome': nome,
+				'email': email,
+				'senha': senha,
+				'confirmaSenha': confirmaSenha
+			},
+			dataType: 'json',
+			success: function(result) {
+				if(result.resp == true){
+                    Swal.fire(
+                        'Tudo certo!',
+                        'Usuário cadastrado com sucesso!',
+                        'success'
+                      )
+                }
+			}
+		});
     }
-
-
 }

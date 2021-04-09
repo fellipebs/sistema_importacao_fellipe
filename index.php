@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?php
       include("funcoes/global.php");
+      include('conexao/conexao.php');
       importacoes();
     ?>
     <title>Login!</title>
