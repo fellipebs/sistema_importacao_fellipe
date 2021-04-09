@@ -73,5 +73,25 @@ function login(){
   var email = $('#email').val();
   var senha = $('#senha').val();
 
+  $.ajax({
+    type: "POST",
+    url: "auxiliares/autenticacao_usuario.php",
+    data: {
+      'email': email,
+      'senha': senha
+    },
+    dataType: 'json',
+    success: function(result) {
+      if(result.resp == true){
+        window.location.href = "sistema.php"
+      }else{
+        Swal.fire(
+          'Alerta!',
+          'Login ou senha incorretos!',
+          'warning'
+        )
+      }
+    }
+  });
  
 }

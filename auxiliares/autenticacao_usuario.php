@@ -1,10 +1,19 @@
 <?php
 include('../conexao/conexao.php');
 
-$consulta = $pdo->query("SELECT nome, usuario FROM login;"); // Continuar daqui amanhã
+$sql = $con->prepare("SELECT usuario_id, usuario_login FROM usuario WHERE usuario_login = ? AND usuario_senha = ?");
+$sql->execute(array($_POST['email'], md5($_POST['senha'])));
 
-while ($linha = $consulta->fetch(PDO::FETCH_ASSOC)) {
-    echo "Nome: {$linha['nome']} - Usuário: {$linha['usuario']}<br />";
+$row = $sql->fetchObject();  // devolve um único registro
+
+// Se o usuário foi localizado
+if ($row) {
+    $_SESSION['usuario'] = $row;
+    $resposta['resp'] = true;
+}else{
+    $resposta['resp'] = false;
+
 }
 
+echo json_encode($resposta);
 ?>
