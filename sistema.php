@@ -26,9 +26,6 @@ if(!isset($_SESSION['usuario'])){ //Caso não exista sessão, redirecionar o usu
         <a class="nav-link" href="sistema.php">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="visualizacao_produtos.php">Ver já importados</a>
-      </li>
-      <li class="nav-item">
         <a class="nav-link disabled" href="#"><?php echo 'Seja bem-vindo '.$_SESSION['usuario']->usuario_login.'!'; ?></a>
       </li>
     </ul>
@@ -44,21 +41,19 @@ if(!isset($_SESSION['usuario'])){ //Caso não exista sessão, redirecionar o usu
     <div class='col-md-6'>
       <input type='file' accept='.xlsx' name='arquivo' id='arquivo' required>
     </div>
-    <div class='col-md-6'>
+    <div class='col-md-6' id='botoesAcao'>
       <button type='submit' class='btn btn-success'>Processar arquivo</button>
+      <button type="button" class="btn btn-primary" id='btnRelatorio' data-toggle="modal" data-target="#modalRelatorio" disabled>Visualizar relatório de inserção</button>
     </div>
   </div>
   </form>
-</div>
-
 
 <?php
 if(isset($_FILES['arquivo'])){ // Validação para o arquivo
   if ( $xlsx = SimpleXLSX::parse($_FILES['arquivo']['tmp_name'] ) ) {
     $html = ""; // Variável que irá armazenar a tabela! 
-    $html .= "<div class='container'>
-          <table class='table'>";
-          $html .= "<tbody>"; 
+    $html .= "<table class='table'>";
+      $html .= "<tbody>"; 
     $i = 0;
 
     $validador = array(); // Caso alguma posição venha a ser false, não poderemos inserir nada!
@@ -147,13 +142,13 @@ if(isset($_FILES['arquivo'])){ // Validação para o arquivo
             $validador[$i] = true;
             $html .= "<thead>";
             $html .= "<tr>";
-                $html .= "<td>".$linha[0]."</td>";
-                $html .= "<td>".$linha[1]."</td>";
-                $html .= "<td>".$linha[2]."</td>";
-                $html .= "<td>".$linha[3]."</td>";
-                $html .= "<td>".$linha[4]."</td>";
-                $html .= "<td>Mensagem</td>";
-              $html .= "</tr>";
+              $html .= "<td>".$linha[0]."</td>";
+              $html .= "<td>".$linha[1]."</td>";
+              $html .= "<td>".$linha[2]."</td>";
+              $html .= "<td>".$linha[3]."</td>";
+              $html .= "<td>".$linha[4]."</td>";
+              $html .= "<td>Mensagem</td>";
+            $html .= "</tr>";
             $html .= "</thead>";
           }
       }
@@ -162,7 +157,7 @@ if(isset($_FILES['arquivo'])){ // Validação para o arquivo
 
     $html .= "</tbody>
           </table>
-          </div>";
+          ";
 
     if(count($validador) == 0){ // Caso nenhuma linha foi inserido um arquivo vazio.
       echo 
@@ -188,14 +183,25 @@ if(isset($_FILES['arquivo'])){ // Validação para o arquivo
         "<script>
           Swal.fire(
           'Ocorreu algum problema!',
-          'Algo está errado com seu arquivo de importação, favor verificar as mensagens e o inseri-lo corretamente.',
+          'Algo está errado com seu arquivo de importação, favor verificar o relatório de importação e consertá-lo, antes de tentar inserir novamente.',
           'error'
           );
+          $('#btnRelatorio').prop('disabled', false);
         </script>";
-        echo $html; // Mostrando o problema direto na tabela
+        echo "<div class='modal fade' id='modalRelatorio' role='dialog'>
+              <div class='modal-dialog modal-lg'>
+                <div class='modal-content'>
+                  <div class='modal-header'>
+                    <h4 class='modal-title'>Relatório de inserção:</h4>
+                  </div>
+                  <div class='modal-bodxy'>";
+                    echo $html; // Mostrando o problema direto na tabela           
+            echo "</div>
+                </div>
+              </div>
+            </div>";
       }
     }else{
-      echo $html; // Caso chegue aqui, está tudo OK para os inserts na tabela!
       $j = 0;
       foreach ($xlsx->rows() as $linha) { 
         if($j != 0){ // Pulando cabecalho
@@ -221,12 +227,11 @@ if(isset($_FILES['arquivo'])){ // Validação para o arquivo
         }
         $j++;
       }
-
       echo 
         "<script>
           Swal.fire(
           'Produtos inseridos com sucesso!',
-          'Os produtos foram inseridos corretamente, caso queira vê-los, ou editá-los, vá na aba \"Ver já importados\"!',
+          'Os produtos foram inseridos corretamente!',
           'success'
           );
         </script>";
@@ -234,4 +239,72 @@ if(isset($_FILES['arquivo'])){ // Validação para o arquivo
   }
 }
 ?>
-</body>
+
+
+
+<?php
+//Select buscando todos os produtos já cadastrados
+$stmt = $con->query("SELECT produto_id, 
+                            produto_ean, 
+                            produto_nome, 
+                            produto_preco, 
+                            produto_estoque, 
+                            DATE_FORMAT(produto_data_fabricacao,'%d/%m/%Y') as produto_data_fabricacao
+                      FROM produto");
+$i = 0;   
+echo "<table class='table'>";
+    echo "<thead>";
+        echo "<tr>";
+            echo "<th>Ações</th>";
+            echo "<th>EAN</th>";
+            echo "<th>Nome</th>";
+            echo "<th>Preço</th>";
+            echo "<th>Estoque</th>";
+            echo "<th>Data de fabricação</th>";
+        echo "</tr>";
+    echo "</thead>";
+    echo "<tbody>"; 
+while ($row = $stmt->fetch()) { // Alimentando a tabela
+        echo "<tr id='tr_".$row['produto_id']."'>"; 
+            echo "<td><button class='btn btn-success' onclick='editar(".$row['produto_id'].")' data-toggle='modal' data-target='#myModal'>Editar</button>
+                      <button class='btn btn-danger' onclick='excluir(".$row['produto_id'].")'>Excluir</button>
+                  </td>";
+            echo "<td>".$row['produto_ean']."</td>";
+            echo "<td>".utf8_encode($row['produto_nome'])."</td>";
+            echo "<td style='text-align: right;'>R$ ".number_format($row['produto_preco'],2,',','.')."</td>";
+            echo "<td style='text-align: right;'>".number_format($row['produto_estoque'],2,',','.')."</td>";
+            echo "<td style='text-align: center;'>".$row['produto_data_fabricacao']."</td>";
+        echo "</tr>"; 
+    $i++;
+}
+echo "</tbody>";
+echo "</table>";
+if($i == 0){ // Caso i == 0, não foram encontrados produtos no SQL, portanto disparar mensagem.
+    echo "<script>";
+    echo "Swal.fire(
+            'Info!',
+            'Nenhum dado para produto ainda foi encontrado, favor inseri-los!',
+            'info'
+         );";
+    echo "</script>";
+}
+?>
+<!-- Modal para edição de produtos -->
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Edição de produto</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body" id='corpoModal'>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success btn-block ml-1" id='btnConfirmar' onclick='confirmarEdicao();'>Confirmar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
