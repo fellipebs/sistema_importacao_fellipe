@@ -9,4 +9,20 @@ usuario_senha VARCHAR(200) NOT NULL,
 usuario_imagem VARCHAR(30)
 ); -- Criando tabela de usuario
 
-SELECT * FROM usuario;
+
+CREATE TABLE produto(
+produto_id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+produto_ean INT(20) NOT NULL UNIQUE,
+produto_nome VARCHAR(200) NOT NULL,
+produto_preco DOUBLE(9,2) NOT NULL,
+produto_estoque DOUBLE(9,2) NOT NULL,
+produto_data_fabricacao DATE
+);
+
+SELECT produto_id, 
+       produto_ean, 
+       produto_nome, 
+       produto_preco, 
+       produto_estoque, 
+       produto_data_fabricacao 
+FROM produto
