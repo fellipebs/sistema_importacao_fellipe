@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 include("funcoes/global.php");
 include('conexao/conexao.php');
@@ -58,7 +58,7 @@ echo "<table class='table'>";
     echo "<tbody>"; 
 while ($row = $stmt->fetch()) {
         echo "<tr id='tr_".$row['produto_id']."'>"; 
-            echo "<td><button class='btn btn-success' onclick='editar(".$row['produto_id'].")'>Editar</button>
+            echo "<td><button class='btn btn-success' onclick='editar(".$row['produto_id'].")' data-toggle='modal' data-target='#myModal'>Editar</button>
                       <button class='btn btn-danger' onclick='excluir(".$row['produto_id'].")'>Excluir</button>
                   </td>";
             echo "<td>".$row['produto_ean']."</td>";
@@ -80,3 +80,21 @@ if($i == 0){ // Caso i == 0, não foram encontrados produtos no SQL, portanto di
 }
 ?>
 </div>
+
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Edição de produto</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body" id='corpoModal'>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success btn-block ml-1" id='btnConfirmar' onclick='cadastrar();'>Confirmar</button>
+        </div>
+      </div>
+    </div>
+  </div>

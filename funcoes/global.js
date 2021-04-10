@@ -1,4 +1,4 @@
-function cadastrar(){
+﻿function cadastrar(){
     var nome = $('#nomeCad').val();
     var email = $('#emailCad').val();
     var senha = $('#senhaCad').val();
@@ -153,4 +153,25 @@ function excluir(id){
       });
     }
   })
+}
+
+function editar(id){
+  $.ajax({
+    type: "POST",
+    url: "auxiliares/edicao.php",
+    data: { 
+      id: id
+    },
+    dataType: 'json',
+    success: function(result) {  
+      $('#corpoModal').html(b64DecodeUnicode(result.html));
+    }
+  });
+}
+
+
+function b64DecodeUnicode(str) { // Decodificação para UTF-8!
+  return decodeURIComponent(atob(str).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
 }
