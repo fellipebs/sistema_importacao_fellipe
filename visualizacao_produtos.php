@@ -33,6 +33,50 @@ if(!isset($_SESSION['usuario'])){ //Caso não exista sessão, redirecionar o usu
   </div>
 </nav>
 
-<div class='container-fluid'>
+<div class='container'>
+<?php
 
+$stmt = $con->query("SELECT produto_id, 
+                            produto_ean, 
+                            produto_nome, 
+                            produto_preco, 
+                            produto_estoque, 
+                            DATE_FORMAT(produto_data_fabricacao,'%d/%m/%Y') as produto_data_fabricacao
+                      FROM produto");
+$i = 0;   
+echo "<table class='table'>";
+    echo "<thead>";
+        echo "<tr>";
+            echo "<th>Ações</th>";
+            echo "<th>EAN</th>";
+            echo "<th>Nome</th>";
+            echo "<th>Preço</th>";
+            echo "<th>Estoque</th>";
+            echo "<th>Data de fabricação</th>";
+        echo "</tr>";
+    echo "</thead>";
+    echo "<tbody>"; 
+while ($row = $stmt->fetch()) {
+        echo "<tr id='tr_".$row['produto_id']."'>"; 
+            echo "<td><button class='btn btn-success' onclick='editar(".$row['produto_id'].")'>Editar</button>
+                      <button class='btn btn-danger' onclick='excluir(".$row['produto_id'].")'>Excluir</button>
+                  </td>";
+            echo "<td>".$row['produto_ean']."</td>";
+            echo "<td>".$row['produto_nome']."</td>";
+            echo "<td style='text-align: right;'>R$ ".number_format($row['produto_preco'],2,',','.')."</td>";
+            echo "<td style='text-align: center;'>".$row['produto_estoque']."</td>";
+            echo "<td style='text-align: center;'>".$row['produto_data_fabricacao']."</td>";
+        echo "</tr>"; 
+    $i++;
+}
+if($i == 0){ // Caso i == 0, não foram encontrados produtos no SQL, portanto disparar mensagem.
+    echo "<script>";
+    echo "Swal.fire(
+            'Info!',
+            'Nenhum dado para produto ainda foi encontrado!',
+            'info'
+         );";
+    echo "</script>";
+}
+?>
 </div>

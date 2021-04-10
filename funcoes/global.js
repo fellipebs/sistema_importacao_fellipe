@@ -120,3 +120,37 @@ function logout(){
     }
   })
 }
+
+
+
+function excluir(id){
+  Swal.fire({
+    title: 'Deseja realmente excluir o produto?',
+    text: "Após a exclusão sua ação não poderá ser revertida!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    cancelButtonText: 'Cancelar.',
+    confirmButtonText: 'Sim, desejo!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $.ajax({
+        type: "POST",
+        url: "auxiliares/exclusao.php",
+        data: { 
+          id: id
+        },
+        dataType: 'json',
+        success: function(result) {  
+          Swal.fire(
+            'Tudo certo!',
+            'O registro foi excluido corretamente!',
+            'success'
+          );
+          $("#tr_"+id).remove();
+        }
+      });
+    }
+  })
+}
