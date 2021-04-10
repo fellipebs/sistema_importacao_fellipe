@@ -56,13 +56,15 @@
             'Tudo certo!',
             'Usuário cadastrado com sucesso!',
             'success'
-            )
+            );
+            $('#myModal').modal('hide');
           }else{
             Swal.fire(
               'Algo ocorreu...',
               'Algum problema aconteceu...',
               'error'
-            )
+            );
+            $('#myModal').modal('hide');
           }
         }
       });
@@ -169,9 +171,101 @@ function editar(id){
   });
 }
 
+function confirmarEdicao(){  // Validação para campos de edição
+    if($("#ean").val() == "" || $("#ean").val() == undefined){
+      Swal.fire(
+        'Alerta!',
+        'Favor digitar um EAN!',
+        'warning'
+      );
+    }else if($("#nome").val() == "" || $("#nome").val() == undefined){
+      Swal.fire(
+        'Alerta!',
+        'Favor digitar um nome!',
+        'warning'
+      );
+    }else if($("#preco").val() == "" || $("#preco").val() == undefined){
+      Swal.fire(
+        'Alerta!',
+        'Favor digitar um preço!',
+        'warning'
+      );
+    }else if($("#estoque").val() == "" || $("#estoque").val() == undefined){
+      Swal.fire(
+        'Alerta!',
+        'Favor digitar um estoque!',
+        'warning'
+      );
+    }else{
+      var idProd = $("#idProd").val();
+
+      var ean = $("#ean").val();
+      var nome = $("#nome").val();
+
+      var preco = $("#preco").val(); // Convertendo formatação da moeda
+      preco = preco.replace('.','');
+      preco = preco.replace(',','.');
+
+      var estoque = $("#estoque").val(); // Convertendo formatação da moeda
+      estoque = estoque.replace('.','');
+      estoque = estoque.replace(',','.');
+
+      var data = $('#data').val();
+
+      $.ajax({
+        type: "POST",
+        url: "auxiliares/edicao.php",
+        data: { 
+          idProd: idProd,
+          ean: ean,
+          nome: nome,
+          preco: preco,
+          estoque: estoque,               
+          data: data
+        },
+        dataType: 'json',
+        success: function(result) {  
+          Swal.fire(
+            'Tudo certo!',
+            'O registro foi editado corretamente!',
+            'success'
+          );
+          $("#tr_"+idProd).html(atob(result.html));
+          $('#myModal').modal('hide');
+        }
+      });
+
+    }
+}
+
+
 
 function b64DecodeUnicode(str) { // Decodificação para UTF-8!
   return decodeURIComponent(atob(str).split('').map(function(c) {
       return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
   }).join(''));
+}
+
+
+// Funções para máscaras de R$
+String.prototype.reverse = function(){
+  return this.split('').reverse().join(''); 
+};
+
+function mascaraMoeda(campo,evento){
+  var tecla = (!evento) ? window.event.keyCode : evento.which;
+  var valor  =  campo.value.replace(/[^\d]+/gi,'').reverse();
+  var resultado  = "";
+  var mascara = "##.###.###,##".reverse();
+  for (var x=0, y=0; x<mascara.length && y<valor.length;) {
+    if (mascara.charAt(x) != '#') {
+      resultado += mascara.charAt(x);
+      x++;
+    } else {
+      resultado += valor.charAt(y);
+      y++;
+      x++;
+    }
+  }
+  campo.value = resultado.reverse();
 }

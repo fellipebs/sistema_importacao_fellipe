@@ -10,3 +10,14 @@
     margin: 24px 0 12px 0;
     position: relative;
 }
+
+#estoque{
+    text-align: right;;
+}
+
+#preco{
+    text-align: right;;
+}
+#containerSistema{
+    margin-top: 10px;
+}

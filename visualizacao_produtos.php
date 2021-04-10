@@ -62,9 +62,9 @@ while ($row = $stmt->fetch()) {
                       <button class='btn btn-danger' onclick='excluir(".$row['produto_id'].")'>Excluir</button>
                   </td>";
             echo "<td>".$row['produto_ean']."</td>";
-            echo "<td>".$row['produto_nome']."</td>";
+            echo "<td>".utf8_encode($row['produto_nome'])."</td>";
             echo "<td style='text-align: right;'>R$ ".number_format($row['produto_preco'],2,',','.')."</td>";
-            echo "<td style='text-align: center;'>".$row['produto_estoque']."</td>";
+            echo "<td style='text-align: right;'>".number_format($row['produto_estoque'],2,',','.')."</td>";
             echo "<td style='text-align: center;'>".$row['produto_data_fabricacao']."</td>";
         echo "</tr>"; 
     $i++;
@@ -93,7 +93,7 @@ if($i == 0){ // Caso i == 0, não foram encontrados produtos no SQL, portanto di
 
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-success btn-block ml-1" id='btnConfirmar' onclick='cadastrar();'>Confirmar</button>
+          <button type="button" class="btn btn-success btn-block ml-1" id='btnConfirmar' onclick='confirmarEdicao();'>Confirmar</button>
         </div>
       </div>
     </div>

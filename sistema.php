@@ -38,7 +38,7 @@ if(!isset($_SESSION['usuario'])){ //Caso não exista sessão, redirecionar o usu
   </div>
 </nav>
 
-<div class='container'>
+<div class='container' id='containerSistema'>
   <form action='' method="post" enctype="multipart/form-data">
   <div class='row'>
     <div class='col-md-6'>

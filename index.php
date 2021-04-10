@@ -49,8 +49,6 @@
         <input type='password' name='senhaCad' id='senhaCad' class='form-control' required>
         <label>Confirme sua senha:</label>
         <input type='password' name='senhaCadConfirma' id='senhaCadConfirma' class='form-control' required>
-        <label>Caso deseje uma foto de perfil, basta anexa-la:</label>
-        <input type='file' accept='.png, .jpg'>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-success btn-block ml-1" id='btnConfirmar' onclick='cadastrar();'>Confirmar</button>
