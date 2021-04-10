@@ -1,6 +1,6 @@
 ﻿<?php
 include('../conexao/conexao.php');
-if (isset($_POST['id'])) {
+if (isset($_POST['id'])) { // Caso entre aqui, ele carrega os inputs pré preenchidos com os valores do produto
        $id = $_POST['id'];
        $sql = $con->prepare("SELECT produto_id, 
                                     produto_ean, 
@@ -25,7 +25,7 @@ if (isset($_POST['id'])) {
        $html .= "<label>Data de fabricação:</label>";
        $html .= "<input type='date' id='data' name='data' class='form-control' value='" . $row->produto_data_fabricacao . "'>";
        $resposta['html'] = base64_encode($html); // Necessário codificar para base64, pois o ajax não entende nossa acentuação.
-} else if (isset($_POST['idProd'])) {
+} else if (isset($_POST['idProd'])) { // Caso entre aqui, ocorre o UPDATE propriamente dito, além de recarregar a TR relacionado ao produto
 
        $idProd = $_POST['idProd'];
        $ean = $_POST['ean'];

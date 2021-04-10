@@ -74,7 +74,7 @@ if(isset($_FILES['arquivo'])){ // Validação para o arquivo
     foreach ($xlsx->rows() as $linha) {
       if($i != 0){ // Validação para campos fora do cabecalho
         $html .= "<tr>";
-          if($linha[0] != false && $linha[0] != ""){ // Caso exista EAN, validar se ele já existe!
+          if($linha[0] != false && $linha[0] != ""){ // Caso encontre o EAN no arquivo, validar se ele já existe!
             $sql = $con->prepare("SELECT COUNT(*) AS ct FROM produto WHERE produto_ean = ?");
             $sql->execute(array($linha[0]));
             $row = $sql->fetchObject(); 
@@ -231,9 +231,6 @@ if(isset($_FILES['arquivo'])){ // Validação para o arquivo
           );
         </script>";
     }
-
-  } else {
-    echo SimpleXLSX::parseError();
   }
 }
 ?>

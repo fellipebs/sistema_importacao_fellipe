@@ -35,7 +35,7 @@ if(!isset($_SESSION['usuario'])){ //Caso não exista sessão, redirecionar o usu
 
 <div class='container'>
 <?php
-
+//Select buscando todos os produtos já cadastrados
 $stmt = $con->query("SELECT produto_id, 
                             produto_ean, 
                             produto_nome, 
@@ -56,7 +56,7 @@ echo "<table class='table'>";
         echo "</tr>";
     echo "</thead>";
     echo "<tbody>"; 
-while ($row = $stmt->fetch()) {
+while ($row = $stmt->fetch()) { // Alimentando a tabela
         echo "<tr id='tr_".$row['produto_id']."'>"; 
             echo "<td><button class='btn btn-success' onclick='editar(".$row['produto_id'].")' data-toggle='modal' data-target='#myModal'>Editar</button>
                       <button class='btn btn-danger' onclick='excluir(".$row['produto_id'].")'>Excluir</button>

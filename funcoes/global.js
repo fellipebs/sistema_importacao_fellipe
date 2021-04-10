@@ -1,4 +1,4 @@
-﻿function cadastrar(){
+﻿function cadastrar(){ // Função feita para o cadastro de usuário;
     var nome = $('#nomeCad').val();
     var email = $('#emailCad').val();
     var senha = $('#senhaCad').val();
@@ -71,7 +71,7 @@
     }
 }
 
-function login(){
+function login(){ // Função feita para o login de usuário;
   var email = $('#email').val();
   var senha = $('#senha').val();
 
@@ -84,7 +84,7 @@ function login(){
     },
     dataType: 'json',
     success: function(result) {
-      if(result.resp == true){
+      if(result.resp == true){ // Redirecionando
         window.location.href = "sistema.php";
       }else{
         Swal.fire(
@@ -98,7 +98,7 @@ function login(){
  
 }
 
-function logout(){
+function logout(){ // Função para o logout via ajax, ela da um session destroy.
   Swal.fire({
     title: 'Deseja realmente sair?',
     text: "Você será deslogado do sistema!",
@@ -125,7 +125,7 @@ function logout(){
 
 
 
-function excluir(id){
+function excluir(id){ // Função feita para a exclusão de produtos
   Swal.fire({
     title: 'Deseja realmente excluir o produto?',
     text: "Após a exclusão sua ação não poderá ser revertida!",
@@ -157,7 +157,7 @@ function excluir(id){
   })
 }
 
-function editar(id){
+function editar(id){ // Função feita para a edição de produtos.
   $.ajax({
     type: "POST",
     url: "auxiliares/edicao.php",
