@@ -55,19 +55,10 @@ if(!isset($_SESSION['usuario'])){ //Caso não exista sessão, redirecionar o usu
 <?php
 if(isset($_FILES['arquivo'])){ // Validação para o arquivo
   if ( $xlsx = SimpleXLSX::parse($_FILES['arquivo']['tmp_name'] ) ) {
-    echo "<div class='container'>
+    $html = ""; // Variável que irá armazenar a tabela! 
+    $html .= "<div class='container'>
           <table class='table'>";
-    echo "<thead>";
-        echo "<tr>";
-            echo "<th>EAN</th>";
-            echo "<th>Nome</th>";
-            echo "<th>Preço</th>";
-            echo "<th>Estoque</th>";
-            echo "<th>Data de fabricação</th>";
-            echo "<th>Mensagem</th>";
-        echo "</tr>";
-    echo "</thead>";
-    echo "<tbody>"; 
+          $html .= "<tbody>"; 
     $i = 0;
 
     $validador = array(); // Caso alguma posição venha a ser false, não poderemos inserir nada!
@@ -80,42 +71,43 @@ if(isset($_FILES['arquivo'])){ // Validação para o arquivo
     // [3] -> Estoque
     // [4] -> Data de fabricação
 
-
     foreach ($xlsx->rows() as $linha) {
       if($i != 0){ // Validação para campos fora do cabecalho
-        echo "<tr>";
+        $html .= "<tr>";
           if($linha[0] != false && $linha[0] != ""){ // Caso exista EAN, validar se ele já existe!
             $sql = $con->prepare("SELECT COUNT(*) AS ct FROM produto WHERE produto_ean = ?");
             $sql->execute(array($linha[0]));
             $row = $sql->fetchObject(); 
             if(($row->ct) == 0){ 
-              echo "<td>".$linha[0]."</td>";   
+              $html .= "<td>".$linha[0]."</td>";   
               $validador[$i] = true;         
             }else{
-              echo "<td>".$linha[0]."</td>";            
+              $html .= "<td>".$linha[0]."</td>";            
               $validador[$i] = false;
               $mensagem = "Campo de EAN repetido!";
             }
           }else{ // Caso não exista, abortar e mensagem de EAN não existente
-            echo "<td></td>";            
+            $html .= "<td></td>";            
             $validador[$i] = false;
             $mensagem = "Campo de EAN não encontrado!";
           }
 
           if($linha[1] != false && $linha[1] != ""){ // Validando existência do campo nome
-            echo "<td>".$linha[1]."</td>";
-            $validador[$i] = true;
+            $html .= "<td>".$linha[1]."</td>";
+            if($validador[$i] != false)
+              $validador[$i] = true;
           }else{
-            echo "<td></td>";            
+            $html .= "<td></td>";            
             $validador[$i] = false;
             $mensagem = "Campo de nome não encontrado!";
           }
 
           if($linha[2] != false && $linha[2] != "" && is_numeric($linha[2])){ // Validando existência do campo preço e se ele é numérico
-            echo "<td style='text-align: right;'>R$ ".number_format($linha[2],2,',','.')."</td>";
-            $validador[$i] = true;
+            $html .= "<td style='text-align: right;'>R$ ".number_format($linha[2],2,',','.')."</td>";
+            if($validador[$i] != false)
+              $validador[$i] = true;
           }else{
-            echo "<td></td>";            
+            $html .= "<td></td>";            
             $validador[$i] = false;
             if($linha[2] == "" || $linha[2] == false) // Validação que foi feita com is_numeric para valores não númericos, que poderiam ocasionar em erros no mysql
               $mensagem = "Campo de preço não encontrado!";
@@ -124,10 +116,11 @@ if(isset($_FILES['arquivo'])){ // Validação para o arquivo
           }
 
           if($linha[3] != false && $linha[3] != "" && is_numeric($linha[3])){ // Validando existência do campo estoque e se ele é numérico
-            echo "<td style='text-align: right;'>".number_format($linha[3],2,',','.')."</td>";
-            $validador[$i] = true;
+            $html .= "<td style='text-align: right;'>".number_format($linha[3],2,',','.')."</td>";
+            if($validador[$i] != false)
+              $validador[$i] = true;
           }else{
-            echo "<td></td>";            
+            $html .= "<td></td>";            
             $validador[$i] = false;
             if($linha[3] == "" || $linha[3] == false) // Validação que foi feita com is_numeric para valores não númericos, que poderiam ocasionar em erros no mysql
               $mensagem = "Campo de estoque não encontrado!";
@@ -139,35 +132,105 @@ if(isset($_FILES['arquivo'])){ // Validação para o arquivo
             $data = substr($linha[4],0,10);
             $data = explode('-',$data);
             $data = $data[2]."/".$data[1]."/".$data[0];
-            echo "<td>".$data."</td>"; // Tratando forma de exibição na tela
+            $html .= "<td>".$data."</td>"; // Tratando forma de exibição na tela
           }else{
-            echo "<td></td>";
+            $html .= "<td></td>";
           }
-          echo "<td>$mensagem</td>";
+          $html .= "<td>$mensagem</td>";
           $mensagem = "Tudo ok!";
-        echo "</tr>";
+        $html .= "</tr>";
       }else{
           //Validando as informações do cabecalho
           if($linha[0] != "EAN" || $linha[1] != "NOME PRODUTO" || $linha[2] != "PREÇO" || $linha[3] != "ESTOQUE" || $linha[4] != "DATA FABRICAÇÃO"){
             $validador[$i] = false;
-            echo 
-            "<script>
-              Swal.fire(
-              'Cabeçalho incorreto!',
-              'Dados não poderão ser incluídos pois o cabeçalho está incorreto...',
-              'error'
-              );
-            </script>";
-          }else{
+          }else{ // Imprimindo Cabeçalho
             $validador[$i] = true;
+            $html .= "<thead>";
+            $html .= "<tr>";
+                $html .= "<td>".$linha[0]."</td>";
+                $html .= "<td>".$linha[1]."</td>";
+                $html .= "<td>".$linha[2]."</td>";
+                $html .= "<td>".$linha[3]."</td>";
+                $html .= "<td>".$linha[4]."</td>";
+                $html .= "<td>Mensagem</td>";
+              $html .= "</tr>";
+            $html .= "</thead>";
           }
       }
       $i++;
     }
 
-    echo "</tbody>
-        </table>
-        </div>";
+    $html .= "</tbody>
+          </table>
+          </div>";
+
+    if(count($validador) == 0){ // Caso nenhuma linha foi inserido um arquivo vazio.
+      echo 
+      "<script>
+        Swal.fire(
+        'Arquivo vazio!',
+        'Dados não poderão ser incluídos pois o arquivo estava vazio.',
+        'error'
+        );
+      </script>";
+    }else if(in_array(false, $validador)){ // Caso encontrado o valor FALSE no arquivo, nada poderá ser impresso
+      if($validador[0] == false){ // Caso cabeçalho errado
+        echo 
+        "<script>
+          Swal.fire(
+          'Cabeçalho incorreto!',
+          'Dados não poderão ser incluídos pois o cabeçalho está incorreto...',
+          'error'
+          );
+        </script>";
+      }else{
+        echo 
+        "<script>
+          Swal.fire(
+          'Ocorreu algum problema!',
+          'Algo está errado com seu arquivo de importação, favor verificar as mensagens e o inseri-lo corretamente.',
+          'error'
+          );
+        </script>";
+        echo $html; // Mostrando o problema direto na tabela
+      }
+    }else{
+      echo $html; // Caso chegue aqui, está tudo OK para os inserts na tabela!
+      $j = 0;
+      foreach ($xlsx->rows() as $linha) { 
+        if($j != 0){ // Pulando cabecalho
+          $ean = $linha[0];
+          $nome = utf8_decode($linha[1]); // Forçando UTF decode para nomes com nossa acentuação PT-BR
+          $preco = $linha[2];
+          $estoque = $linha[3];
+          $data = $linha[4];
+          if($data == "" || $data == false || $data == NULL){ // data pode ser nula!
+            $data = NULL;
+          }
+          try{
+          $stmt = $con->prepare("INSERT INTO produto (produto_ean, 
+                                                      produto_nome, 
+                                                      produto_preco, 
+                                                      produto_estoque, 
+                                                      produto_data_fabricacao) 
+                                  VALUES (?,?,?,?,?);");
+          $stmt->execute([$ean, $nome, $preco, $estoque, $data]);
+          }catch(Exception $e){
+              echo $e->getMessage();
+          }
+        }
+        $j++;
+      }
+
+      echo 
+        "<script>
+          Swal.fire(
+          'Produtos inseridos com sucesso!',
+          'Os produtos foram inseridos corretamente, caso queira vê-los, ou editá-los, vá na aba \"Ver já importados\"!',
+          'success'
+          );
+        </script>";
+    }
 
   } else {
     echo SimpleXLSX::parseError();

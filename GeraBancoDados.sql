@@ -19,10 +19,7 @@ produto_estoque DOUBLE(9,2) NOT NULL,
 produto_data_fabricacao DATE
 );
 
-SELECT produto_id, 
-       produto_ean, 
-       produto_nome, 
-       produto_preco, 
-       produto_estoque, 
-       produto_data_fabricacao 
-FROM produto
+
+DELETE FROM produto;
+
+SELECT * FROM produto
