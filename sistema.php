@@ -6,12 +6,10 @@ include("funcoes/global.php");
 include('conexao/conexao.php');
 include("vendor/shuchkin/simplexlsx/src/SimpleXLSX.php");
 importacoes();
-
 if(!isset($_SESSION['usuario'])){ //Caso não exista sessão, redirecionar o usuário para fora.
     header("Location: index.php");
 }
 ?>
-
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
