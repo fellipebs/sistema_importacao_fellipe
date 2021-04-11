@@ -24,7 +24,7 @@ if(!isset($_SESSION['usuario'])){ //Caso não exista sessão, redirecionar o usu
         <a class="nav-link" href="sistema.php">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link disabled" href="#"><?php echo 'Seja bem-vindo '.$_SESSION['usuario']->usuario_login.'!'; ?></a>
+        <a class="nav-link disabled" href="#"><?php echo 'Seja bem-vindo '.$_SESSION['usuario']->usuario_nome.'!'; ?></a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0">

@@ -1,7 +1,7 @@
 <?php
 include('../conexao/conexao.php');
 session_start();
-$sql = $con->prepare("SELECT usuario_id, usuario_login FROM usuario WHERE usuario_login = ? AND usuario_senha = ?");
+$sql = $con->prepare("SELECT usuario_nome, usuario_id, usuario_login FROM usuario WHERE usuario_login = ? AND usuario_senha = ?");
 $sql->execute(array($_POST['email'], md5($_POST['senha'])));
 $row = $sql->fetchObject();  // devolve um único registro
 
