@@ -4,7 +4,7 @@ Sistema feito para importação de xlsx no PHP - Fellipe Saraiva
 O que foi utilizado:
 Linguages: PHP E JS;
 
-Front-end -> NPM (Para instalação de jQuery, Bootstrap 4.0);
+Front-end -> NPM (Para instalação de jQuery, Bootstrap 4.0 e swal);
 
 Todo front end foi baseado em classes do Bootstrap e mensagens de alerta com o swal2;
 
